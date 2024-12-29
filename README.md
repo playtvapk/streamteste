@@ -4,7 +4,17 @@ Play YouTube live streams in any player
 ## Requirements
 python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br>
 flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
-[streamlink](https://streamlink.github.io/install.html) (available at path)
+install [streamlink](https://streamlink.github.io/install.html) and make it available at path
+<br>
+To test streamlink install type in cmd/terminal window
+```
+streamlink --version
+```
+The output should be
+streamlink "version number" eg 7.1.1 <br>
+If it says unknown command/'streamlink' is not recognized as an internal or external command,
+operable program or batch file. <br>
+Then you need to make sure have installed streamlink to path/environmental variables
 
 ## How To Use
 Open youtubelive.m3u <br>
