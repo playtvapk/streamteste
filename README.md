@@ -3,7 +3,7 @@ Play YouTube live streams in any player
 
 ## Requirements
 python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br>
-flask (can be installed by doing ```pip install flask``` at cmd/terminal window) <br>
+flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
 [streamlink](https://streamlink.github.io/install.html) (available at path)
 
 ## How To Use
