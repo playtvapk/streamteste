@@ -1,0 +1,18 @@
+<channels>
+    <channel>
+        <channel-name>ABC News</channel-name>
+        <tvg-id>ABCNEWS.us</tvg-id>
+        <tvg-name>ABC News</tvg-name>
+        <tvg-logo>https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/abc-news-light-us.png?raw=true</tvg-logo>
+        <group-title>News</group-title>
+        <youtube-url>https://www.youtube.com/@abcnews/live</youtube-url>
+    </channel>
+    <channel>
+        <channel-name>GB News</channel-name>
+        <tvg-id>GB.News.HD.uk</tvg-id>
+        <tvg-name>GB News</tvg-name>
+        <tvg-logo>https://github.com/tv-logo/tv-logos/blob/main/countries/united-kingdom/gb-news-uk.png?raw=true</tvg-logo>
+        <group-title>News</group-title>
+        <youtube-url>https://www.youtube.com/@GBNewsOnline/live</youtube-url>
+    </channel>
+</channels>
