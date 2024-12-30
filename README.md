@@ -2,7 +2,7 @@
 Play YouTube live streams in any player
 
 ## Choose script option
-youtube-live.py - Uses a flask server to automatically pull the actuall stream link. Server needs to be running all the time for m3u to work. <br>
+youtube-live.py - Uses a flask server to automatically pull the actuall stream link. Server needs to be running all the time for m3u to work. Best for always working stream<br>
 youtube-non-server.py - Pulls stream link into m3u but script will have to manually run (or cron job) every few hours as the stream links will expire
 
 ## Requirements
@@ -67,4 +67,7 @@ tvg-id = epg tag which matches tvg-id in your epg (you can enter anything here i
 tvg-name = name of channel <br>
 tvg-logo = direct link to channel logo png <br>
 group-title = group you want channel to appear in <br>
-youtube-url = url to youtube live stream - can be @channelname/live or /watch?
+youtube-url = url to youtube live stream - can be @channelname/live or /watch? <br>
+<br>
+As the stream links will expire you will need to setup a cron job/scheduled or manually run the script every few hours <br>
+To have the stream urls automatically be pulled use the flask version
