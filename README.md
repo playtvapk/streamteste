@@ -11,7 +11,8 @@ python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br
 install [streamlink](https://streamlink.github.io/install.html) and make it available at path
 
 ### youtube-live.py only <br>
-flask (can be installed by typing ```pip install flask``` at cmd/terminal window)
+flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
+youtubelive.m3u
 
 ### youtube-non-server.py only <br>
 youtubelinks.xml
