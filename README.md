@@ -19,7 +19,7 @@ install [streamlink](https://streamlink.github.io/install.html) and make it avai
 flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
 youtubelive.m3u
 
-### youtube-non-server.py only <br>
+### youtube-non-server.py and youtube_non_stream_link.py<br>
 youtubelinks.xml
 
 ## Verify streamlink install
