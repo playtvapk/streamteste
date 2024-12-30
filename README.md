@@ -6,15 +6,17 @@ youtube-live.py - Uses a flask server to automatically pull the actuall stream l
 youtube-non-server.py - Pulls stream link into m3u but script will have to manually run (or cron job) every few hours as the stream links will expire
 
 ## Requirements
+### Both versions
 python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br>
 install [streamlink](https://streamlink.github.io/install.html) and make it available at path
-<br>
-youtube-live.py only <br>
-flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
-<br>
-youtube-non-server.py only <br>
+
+### youtube-live.py only <br>
+flask (can be installed by typing ```pip install flask``` at cmd/terminal window)
+
+### youtube-non-server.py only <br>
 youtubelinks.xml
-<br>
+
+## Verify streamlink install
 To test streamlink install type in a new cmd/terminal window
 ```
 streamlink --version
