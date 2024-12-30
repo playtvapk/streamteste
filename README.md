@@ -83,4 +83,6 @@ python youtube-non-server.py or python3 youtube-non-server.py if you have the ol
 As the stream links will expire you will need to setup a cron job/scheduled task or manually run the script every few hours <br>
 To have the stream urls automatically be pulled use the flask version <br>
 <br>
-Note that the extracted m3u8 links will only work on machines that have the same public IP address as the machine that extracted them. To play on a client that has a different public IP you need to use a m3u proxy like threadfin
+
+## Important Note
+The extracted m3u8 links will only work on machines that have the same public IP address as the machine that extracted them. To play on a client that has a different public IP you need to use a m3u proxy like threadfin
