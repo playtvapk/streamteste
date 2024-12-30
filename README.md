@@ -1,10 +1,19 @@
 # youtube-to-m3u
 Play YouTube live streams in any player
 
+## Choose script option
+youtube-live.py - Uses a flask server to automatically pull the actuall stream link. Server needs to be running all the time for m3u to work.
+youtube-non-server.py - Pulls stream link into m3u but script will have to manually run (or cron job) every few hours as the stream links will expire
+
 ## Requirements
 python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br>
-flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
 install [streamlink](https://streamlink.github.io/install.html) and make it available at path
+<br>
+youtube-live.py only <br>
+flask (can be installed by typing ```pip install flask``` at cmd/terminal window) <br>
+<br>
+youtube-non-server.py only <br>
+youtubelinks.xml
 <br>
 To test streamlink install type in a new cmd/terminal window
 ```
@@ -16,7 +25,7 @@ If it says unknown command/'streamlink' is not recognized as an internal or exte
 operable program or batch file. <br>
 Then you need to make sure you have installed streamlink to path/environmental variables
 
-## How To Use
+## How To Use youtube-live.py
 Open youtubelive.m3u <br>
 Change the ip address in the streamlink to the ip address of the machine running the script <br>
 You can also change the port but if you do this you must change the port to match at the bottom of youtube-live.py <br>
@@ -37,3 +46,25 @@ Run the python script <br>
 python youtube-live.py or python3 youtube-live.py if you have the old python2 installed <br>
 <br>
 Script must be running for the m3u to work
+
+## How To Use youtube-non-server.py
+Open youtubelinks.xml in a code text editor eg notepad++ <br>
+Add in your channel details for your youtube stream in the following format
+
+```
+<channel>
+        <channel-name>ABC News</channel-name>
+        <tvg-id>ABCNEWS.us</tvg-id>
+        <tvg-name>ABC News</tvg-name>
+        <tvg-logo>https://github.com/tv-logo/tv-logos/blob/main/countries/united-states/abc-news-light-us.png?raw=true</tvg-logo>
+        <group-title>News</group-title>
+        <youtube-url>https://www.youtube.com/@abcnews/live</youtube-url>
+    </channel>
+```
+
+channel-name = name of channel <br>
+tvg-id = epg tag which matches tvg-id in your epg (you can enter anything here if you don't have an epg or leave blank) <br>
+tvg-name = name of channel <br>
+tvg-logo = direct link to channel logo png <br>
+group-title = group you want channel to appear in <br>
+youtube-url = url to youtube live stream - can be @channelname/live or /watch?
