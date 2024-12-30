@@ -20,7 +20,7 @@ flask (can be installed by typing ```pip install flask``` at cmd/terminal window
 youtubelive.m3u
 
 ### youtube-non-server.py and youtube_non_stream_link.py<br>
-requests (can be installed by typing ```pip install requests``` at cmd/terminal window)
+requests (can be installed by typing ```pip install requests``` at cmd/terminal window) <br>
 youtubelinks.xml
 
 ## Verify streamlink install
