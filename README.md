@@ -9,8 +9,10 @@ youtube-non-server.py - Pulls stream link into m3u but script will have to manua
 youtube_non_stream_link.py - Same as youtube-non-server.py but doesn't require streamlink - only use if you are unable to install streamlink as if anything changes youtube side the script will need updating instead of just updating streamlink
 
 ## Requirements
-### Both versions
-python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)<br>
+### All Versions
+python - must be 3.10 or higher (3.8 or lower is not supported by streamlink)
+
+### All Versions except youtube_non_stream_link.py
 install [streamlink](https://streamlink.github.io/install.html) and make it available at path
 
 ### youtube-live.py only <br>
