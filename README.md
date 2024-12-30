@@ -74,5 +74,5 @@ youtube-url = url to youtube live stream - can be @channelname/live or /watch? <
 Run the python script <br>
 python youtube-non-server.py or python3 youtube-non-server.py if you have the old python2 installed <br>
 <br>
-As the stream links will expire you will need to setup a cron job/scheduled or manually run the script every few hours <br>
+As the stream links will expire you will need to setup a cron job/scheduled task or manually run the script every few hours <br>
 To have the stream urls automatically be pulled use the flask version
