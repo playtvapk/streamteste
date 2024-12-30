@@ -3,7 +3,7 @@ Play YouTube live streams in any player
 
 ## Choose script option
 youtube-live.py - Uses a flask server to automatically pull the actuall stream link. Server needs to be running all the time for m3u to work. Best for always working stream<br>
-youtube-non-server.py - Pulls stream link into m3u but script will have to manually run (or cron job) every few hours as the stream links will expire
+youtube-non-server.py - Pulls stream link into m3u but script will have to manually run (or cron job) every few hours as the stream links will expire <br>
 youtube_non_stream_link.py - Same as youtube-non-server.py but doesn't require streamlink - only use if you are unable to install streamlink as if anything changes youtube side the script will need updating instead of just updating streamlink
 
 ## Requirements
