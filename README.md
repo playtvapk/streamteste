@@ -1,6 +1,9 @@
 # youtube-to-m3u
 Play YouTube live streams in any player
 
+## Important Note
+The m3u/extracted m3u8 links will only work on machines that have the same public IP address as the machine that extracted them. To play on a client that has a different public IP use a non flask version and load the m3u into a m3u proxy such as threadfin to restream
+
 ## Choose script option
 youtube-live.py - Uses a flask server to automatically pull the actuall stream link. Server needs to be running all the time for m3u to work. Best for always working stream<br>
 <br>
@@ -84,6 +87,3 @@ python youtube-non-server.py or python3 youtube-non-server.py if you have the ol
 As the stream links will expire you will need to setup a cron job/scheduled task or manually run the script every few hours <br>
 To have the stream urls automatically be pulled use the flask version <br>
 <br>
-
-## Important Note
-The extracted m3u8 links will only work on machines that have the same public IP address as the machine that extracted them. To play on a client that has a different public IP you need to use a m3u proxy like threadfin
