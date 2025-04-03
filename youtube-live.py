@@ -2,13 +2,11 @@ import subprocess
 import json
 import logging
 from flask import Flask, request, Response, jsonify
-import signal
-import os
 
 app = Flask(__name__)
 
-# Set up logging to only show warnings and errors
-logging.basicConfig(level=logging.WARNING)
+# Set up logging to show info, warnings, and errors
+logging.basicConfig(level=logging.INFO)
 
 @app.route('/stream', methods=['GET'])
 def stream():
@@ -62,26 +60,29 @@ def stream():
 
         # Start the subprocess
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        client_ip = request.remote_addr  # Get client IP for logging
 
         def generate():
             try:
+                logging.info(f"Starting stream for client {client_ip} from {url}")
                 while True:
                     data = process.stdout.read(4096)
                     if not data:
                         break
                     yield data
             except GeneratorExit:
-                # Client disconnected, terminate the process
+                # Log when client disconnects
+                logging.info(f"Client {client_ip} disconnected from stream {url}")
                 process.terminate()
                 try:
-                    process.wait(timeout=5)  # Give it 5 seconds to terminate gracefully
+                    process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
-                    process.kill()  # Force kill if it doesn't terminate
+                    process.kill()
                 finally:
                     process.stdout.close()
                     process.stderr.close()
             except Exception as e:
-                logging.error(f'Error in generator: {str(e)}')
+                logging.error(f'Error in generator for {client_ip}: {str(e)}')
                 process.terminate()
                 process.stdout.close()
                 process.stderr.close()
@@ -92,6 +93,7 @@ def stream():
         @response.call_on_close
         def cleanup():
             if process.poll() is None:  # Process is still running
+                logging.info(f"Cleaning up stream process for client {client_ip} from {url}")
                 process.terminate()
                 try:
                     process.wait(timeout=5)
