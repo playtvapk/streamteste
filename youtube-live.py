@@ -2,42 +2,36 @@ import subprocess
 import json
 import logging
 from flask import Flask, request, Response, jsonify
-from urllib.parse import quote
+from urllib.parse import unquote
+import os
+
+# Ensure UTF-8 encoding for subprocesses
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 app = Flask(__name__)
 
-# Set up logging to show info, warnings, and errors
-logging.basicConfig(level=logging.INFO)
+# Set up logging with UTF-8 encoding
+logging.basicConfig(level=logging.INFO, encoding='utf-8')
 
 @app.route('/stream', methods=['GET'])
 def stream():
-    url = request.args.get('url')
+    url = unquote(request.args.get('url'))  # Decode URL-encoded characters
     if not url:
         return jsonify({'error': 'URL parameter is required'}), 400
 
     try:
-        # Ensure URL is properly encoded
-        url = quote(url, safe=':/?=&')
-        
         # Get stream info with more detailed output
         info_command = ['streamlink', '--json', '--loglevel', 'debug', url]
         info_process = subprocess.Popen(info_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         info_output, info_error = info_process.communicate()
 
         if info_process.returncode != 0:
-            try:
-                error_msg = info_error.decode('utf-8', errors='replace')
-            except Exception as e:
-                error_msg = f"Failed to decode error message: {str(e)}"
+            error_msg = info_error.decode('utf-8', errors='replace')
             logging.error(f'Streamlink error: {error_msg}')
             return jsonify({'error': 'Failed to retrieve stream info', 'details': error_msg}), 500
 
         # Parse the JSON output
-        try:
-            stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
-        except json.JSONDecodeError as e:
-            logging.error(f'JSON decode error: {str(e)}')
-            return jsonify({'error': 'Failed to parse stream info'}), 500
+        stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
 
         # Check if streams are available
         if 'streams' not in stream_info or not stream_info['streams']:
@@ -47,22 +41,14 @@ def stream():
                 yt_url, yt_error = yt_process.communicate()
                 
                 if yt_process.returncode != 0:
-                    try:
-                        error_msg = yt_error.decode('utf-8', errors='replace')
-                    except Exception as e:
-                        error_msg = f"Failed to decode error message: {str(e)}"
-                    logging.error(f'youtube-dl error: {error_msg}')
+                    logging.error(f'youtube-dl error: {yt_error.decode('utf-8', errors='replace')}')
                     return jsonify({'error': 'No valid streams found'}), 404
                 
                 url = yt_url.decode('utf-8', errors='replace').strip()
                 info_command = ['streamlink', '--json', url]
                 info_process = subprocess.Popen(info_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 info_output, info_error = info_process.communicate()
-                try:
-                    stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
-                except json.JSONDecodeError as e:
-                    logging.error(f'JSON decode error: {str(e)}')
-                    return jsonify({'error': 'Failed to parse stream info'}), 500
+                stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
 
         best_quality = stream_info['streams'].get('best')
         if not best_quality:
@@ -79,7 +65,7 @@ def stream():
 
         # Start the subprocess
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        client_ip = request.remote_addr  # Get client IP for logging
+        client_ip = request.remote_addr
 
         def generate():
             try:
@@ -90,7 +76,6 @@ def stream():
                         break
                     yield data
             except GeneratorExit:
-                # Log when client disconnects
                 logging.info(f"Client {client_ip} disconnected from stream {url}")
                 process.terminate()
                 try:
@@ -106,12 +91,11 @@ def stream():
                 process.stdout.close()
                 process.stderr.close()
 
-        # Create response with cleanup
         response = Response(generate(), content_type='video/mp2t')
         
         @response.call_on_close
         def cleanup():
-            if process.poll() is None:  # Process is still running
+            if process.poll() is None:
                 logging.info(f"Cleaning up stream process for client {client_ip} from {url}")
                 process.terminate()
                 try:
