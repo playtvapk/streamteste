@@ -59,13 +59,13 @@ def get_stream_url(youtube_url):
 def generate_m3u(channels, output_file):
     """Generate an M3U playlist from channel information."""
     try:
-        with open(output_file, 'w') as m3u:
+        with open(output_file, 'w', encoding='utf-8') as m3u:
             m3u.write('#EXTM3U\n')
             for channel in channels:
                 stream_url = get_stream_url(channel['youtube-url'])
                 if stream_url:
                     m3u.write(f'#EXTINF:-1 tvg-id="{channel["tvg-id"]}" tvg-name="{channel["tvg-name"]}" '
-                              f'tvg-logo="{channel["tvg-logo"]}" group-title="{channel["group-title"]}",' 
+                              f'tvg-logo="{channel["tvg-logo"]}" group-title="{channel["group-title"]}",'
                               f'{channel["name"]}\n')
                     m3u.write(f'{stream_url}\n')
                     logging.info(f"{channel['name']} exported successfully")
