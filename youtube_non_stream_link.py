@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import logging
 import re
 import requests
+import io
 
 # Set up logging to show only info and above
 logging.basicConfig(
@@ -13,7 +14,9 @@ logging.basicConfig(
 def parse_xml(file_path):
     """Parse the XML file and extract channel information."""
     try:
-        tree = ET.parse(file_path)
+        # Parse XML with explicit UTF-8 encoding
+        with open(file_path, 'r', encoding='utf-8') as f:
+            tree = ET.parse(f)
         root = tree.getroot()
 
         channels = []
@@ -31,6 +34,9 @@ def parse_xml(file_path):
             else:
                 logging.warning(f"Skipping channel '{channel_info['name']}' due to missing YouTube URL.")
         return channels
+    except UnicodeDecodeError as ude:
+        logging.error(f'Encoding error while parsing XML file: {str(ude)}')
+        return None
     except Exception as e:
         logging.error(f'Failed to parse XML file: {str(e)}')
         return None
@@ -58,21 +64,26 @@ def extract_youtube_stream(youtube_url):
 def generate_m3u(channels, output_file):
     """Generate an M3U playlist from channel information."""
     try:
-        with open(output_file, 'w') as m3u:
+        with io.open(output_file, 'w', encoding='utf-8') as m3u:
             m3u.write('#EXTM3U\n')
             for channel in channels:
                 stream_url = extract_youtube_stream(channel['youtube-url'])
                 if stream_url:
                     # Write the HLS URL only (without extra data)
                     m3u.write(f'#EXTINF:-1 tvg-id="{channel["tvg-id"]}" tvg-name="{channel["tvg-name"]}" '
-                              f'tvg-logo="{channel["tvg-logo"]}" group-title="{channel["group-title"]}",' 
+                              f'tvg-logo="{channel["tvg-logo"]}" group-title="{channel["group-title"]}",'
                               f'{channel["name"]}\n')
-                    # Output only the value of hlsManifestUrl without quotes
-                    hls_url = stream_url.split('hlsManifestUrl":"')[1].split('"')[0]
+                    # Check if hlsManifestUrl is in the stream_url
+                    if 'hlsManifestUrl' in stream_url:
+                        hls_url = stream_url.split('hlsManifestUrl":"')[1].split('"')[0]
+                    else:
+                        hls_url = stream_url
                     m3u.write(f'{hls_url}\n')
                     logging.info(f"{channel['name']} exported successfully")
                 else:
                     logging.warning(f"Failed to export {channel['name']}. Stream URL not found.")
+    except UnicodeEncodeError as uee:
+        logging.error(f'Encoding error while generating M3U file: {str(uee)}')
     except Exception as e:
         logging.error(f'Failed to generate M3U file: {str(e)}')
 
