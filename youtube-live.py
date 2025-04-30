@@ -2,6 +2,7 @@ import subprocess
 import json
 import logging
 from flask import Flask, request, Response, jsonify
+from urllib.parse import quote
 
 app = Flask(__name__)
 
@@ -15,18 +16,28 @@ def stream():
         return jsonify({'error': 'URL parameter is required'}), 400
 
     try:
+        # Ensure URL is properly encoded
+        url = quote(url, safe=':/?=&')
+        
         # Get stream info with more detailed output
         info_command = ['streamlink', '--json', '--loglevel', 'debug', url]
         info_process = subprocess.Popen(info_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         info_output, info_error = info_process.communicate()
 
         if info_process.returncode != 0:
-            error_msg = info_error.decode()
+            try:
+                error_msg = info_error.decode('utf-8', errors='replace')
+            except Exception as e:
+                error_msg = f"Failed to decode error message: {str(e)}"
             logging.error(f'Streamlink error: {error_msg}')
             return jsonify({'error': 'Failed to retrieve stream info', 'details': error_msg}), 500
 
         # Parse the JSON output
-        stream_info = json.loads(info_output)
+        try:
+            stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
+        except json.JSONDecodeError as e:
+            logging.error(f'JSON decode error: {str(e)}')
+            return jsonify({'error': 'Failed to parse stream info'}), 500
 
         # Check if streams are available
         if 'streams' not in stream_info or not stream_info['streams']:
@@ -36,14 +47,22 @@ def stream():
                 yt_url, yt_error = yt_process.communicate()
                 
                 if yt_process.returncode != 0:
-                    logging.error(f'youtube-dl error: {yt_error.decode()}')
+                    try:
+                        error_msg = yt_error.decode('utf-8', errors='replace')
+                    except Exception as e:
+                        error_msg = f"Failed to decode error message: {str(e)}"
+                    logging.error(f'youtube-dl error: {error_msg}')
                     return jsonify({'error': 'No valid streams found'}), 404
                 
-                url = yt_url.decode().strip()
+                url = yt_url.decode('utf-8', errors='replace').strip()
                 info_command = ['streamlink', '--json', url]
                 info_process = subprocess.Popen(info_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 info_output, info_error = info_process.communicate()
-                stream_info = json.loads(info_output)
+                try:
+                    stream_info = json.loads(info_output.decode('utf-8', errors='replace'))
+                except json.JSONDecodeError as e:
+                    logging.error(f'JSON decode error: {str(e)}')
+                    return jsonify({'error': 'Failed to parse stream info'}), 500
 
         best_quality = stream_info['streams'].get('best')
         if not best_quality:
